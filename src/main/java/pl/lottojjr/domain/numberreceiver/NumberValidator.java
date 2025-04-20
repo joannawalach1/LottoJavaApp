@@ -2,7 +2,7 @@ package pl.lottojjr.domain.numberreceiver;
 
 import java.util.Set;
 
-class NumberValidator {
+public class NumberValidator {
     private static final Integer MIN_NUMBER = 1 ;
     private static final Integer MAX_NUMBER = 99;
     private static final Integer AMOUNT_OF_NUMBERS = 6;
