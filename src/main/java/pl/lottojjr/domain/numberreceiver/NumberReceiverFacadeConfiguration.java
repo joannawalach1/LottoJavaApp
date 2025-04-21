@@ -1,9 +1,10 @@
 package pl.lottojjr.domain.numberreceiver;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
+import java.awt.*;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -12,44 +13,18 @@ import java.time.ZoneId;
 public class NumberReceiverFacadeConfiguration {
 
     @Bean
-    public NumberValidator numberValidator() {
-        return new NumberValidator();
+    public Clock clock() {
+        return Clock.systemDefaultZone();
     }
 
     @Bean
     public NumberReceiverMapper numberReceiverMapper() {
-        return new NumberReceiverMapper() {
-            @Override
-            public TicketDto toDto(Ticket ticket) {
-                return null;
-            }
-        };
-    }
-    
-    @Bean
-    public Clock clock() {
-        Clock clock = new Clock() {
-            @Override
-            public ZoneId getZone() {
-                return null;
-            }
-
-            @Override
-            public Clock withZone(ZoneId zone) {
-                return null;
-            }
-
-            @Override
-            public Instant instant() {
-                return null;
-            }
-        };
-        return clock;
+        return Mappers.getMapper(NumberReceiverMapper.class);
     }
 
-
     @Bean
-    public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberValidator numberValidator, NumberReceiverMapper numberReceiverMapper, Clock clock) {
+    public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberReceiverMapper numberReceiverMapper, Clock clock) {
+        NumberValidator numberValidator = new NumberValidator();
         return new NumberReceiverFacade(
                 repository,
                 numberValidator,

@@ -23,6 +23,5 @@ public class NumberReceiverController {
     public ResponseEntity<TicketDto> addTicket(@RequestBody Set<Integer> numbers) {
         TicketDto ticketDto = numberReceiverFacade.inputNumbers(numbers);
         return ResponseEntity.status(HttpStatus.OK).body(ticketDto);
-
     }
 }

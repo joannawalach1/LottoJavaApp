@@ -15,7 +15,7 @@ public class NumberReceiverFacade {
     private final TicketRepository ticketRepository;
     private final NumberValidator numberValidator;
     private final NumberReceiverMapper numberReceiverMapper;
-    private final  Clock clock;
+    private final Clock clock;
 
     public TicketDto inputNumbers(Set<Integer> userNumbers) {
         String id = UUID.randomUUID().toString();
