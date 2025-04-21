@@ -25,11 +25,15 @@ public class NumberReceiverFacadeConfiguration {
     @Bean
     public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberReceiverMapper numberReceiverMapper, Clock clock) {
         NumberValidator numberValidator = new NumberValidator();
+        DrawDateGenerator drawDateGenerator = new DrawDateGenerator(clock);
+        HashGenerable hashGenerable = new HashGenerator();
         return new NumberReceiverFacade(
                 repository,
                 numberValidator,
                 numberReceiverMapper,
-                clock
+                clock,
+                drawDateGenerator,
+                hashGenerable
         );
     }
 }
