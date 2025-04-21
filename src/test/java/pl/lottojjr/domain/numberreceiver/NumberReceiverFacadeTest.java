@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import pl.lottojjr.AdjustableClock;
 import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -17,21 +18,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RequiredArgsConstructor
 class NumberReceiverFacadeTest {
-    private final TicketRepositoryInMemoryImpl ticketRepository = new TicketRepositoryInMemoryImpl();
-    private final NumberValidator numberValidator = new NumberValidator();
-    private final NumberReceiverMapper numberReceiverMapper = Mappers.getMapper(NumberReceiverMapper.class);
-    private final AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2025, 5, 21, 12, 0, 0)
-            .toInstant(ZoneOffset.UTC),
+    Clock clock = new AdjustableClock(
+            LocalDateTime.of(2025, 5, 21, 12, 0, 0).toInstant(ZoneOffset.UTC),
             ZoneId.systemDefault()
     );
 
     NumberReceiverFacade numberReceiverFacade = new NumberReceiverFacade(
-            ticketRepository,
-            numberValidator,
-            numberReceiverMapper,
-            clock
-
+            new TicketRepositoryInMemoryImpl(),
+            new NumberValidator(),
+            Mappers.getMapper(NumberReceiverMapper.class),
+            clock,
+            new DrawDateGenerator(clock),
+            new HashGenerator()
     );
+
 
     @Test
     public void should_return_success_if_user_gave_six_numbers() {
