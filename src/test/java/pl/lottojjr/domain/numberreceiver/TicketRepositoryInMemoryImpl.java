@@ -6,12 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 public class TicketRepositoryInMemoryImpl implements TicketRepository {
-    Map<Ticket, String> ticketsDatabase = new ConcurrentMap<Ticket, String>() {
+    private final Map<Ticket, String> ticketsDatabase = new ConcurrentMap<Ticket, String>() {
         @Override
         public String putIfAbsent(Ticket key, String value) {
             return null;
@@ -92,6 +93,7 @@ public class TicketRepositoryInMemoryImpl implements TicketRepository {
             return null;
         }
     };
+
     public <S extends Ticket> S save(S entity) {
         ticketsDatabase.put(entity, entity.id().toString());
         return entity;
@@ -204,6 +206,12 @@ public class TicketRepositoryInMemoryImpl implements TicketRepository {
 
     @Override
     public <S extends Ticket, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+
+    @Override
+    public List<Ticket> findByDrawDate(LocalDateTime drawDate) {
         return null;
     }
 }
