@@ -18,10 +18,12 @@ public class NumberReceiverFacade {
     private final NumberValidator numberValidator;
     private final NumberReceiverMapper numberReceiverMapper;
     private final Clock clock;
+    private final DrawDateGenerator drawDateGenerator;
+    private final HashGenerable hashGenerable;
 
     public TicketDto inputNumbers(Set<Integer> userNumbers) {
-        String id = UUID.randomUUID().toString();
-        LocalDateTime drawDate = LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS);
+        String id = hashGenerable.generateHash();
+        LocalDateTime drawDate = drawDateGenerator.generateDrawDate();
         numberValidator.validateNumbers(userNumbers);
         Ticket newTicket = new Ticket(id, drawDate, userNumbers);
         Ticket savedTicket = ticketRepository.save(newTicket);
@@ -29,7 +31,6 @@ public class NumberReceiverFacade {
         log.info(savedTicket);
         return dto;
     }
-
 
     public List<Ticket> userNumbers(LocalDateTime drawDate) {
         return Optional.ofNullable(ticketRepository.findByDrawDate(drawDate))
