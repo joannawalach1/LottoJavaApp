@@ -10,29 +10,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TicketRepositoryInMemoryImpl implements TicketRepository {
-    private final Map<Ticket, String> ticketsDatabase = new ConcurrentMap<Ticket, String>() {
-        @Override
-        public String putIfAbsent(Ticket key, String value) {
-            return null;
-        }
-
-        @Override
-        public boolean remove(Object key, Object value) {
-            return false;
-        }
-
-        @Override
-        public boolean replace(Ticket key, String oldValue, String newValue) {
-            return false;
-        }
-
-        @Override
-        public String replace(Ticket key, String value) {
-            return null;
-        }
-
+    Map<Ticket, String> ticketsDatabase = new ConcurrentMap<Ticket, String>() {
         @Override
         public int size() {
             return 0;
@@ -92,11 +73,47 @@ public class TicketRepositoryInMemoryImpl implements TicketRepository {
         public Set<Entry<Ticket, String>> entrySet() {
             return null;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String putIfAbsent(Ticket key, String value) {
+            return null;
+        }
+
+        @Override
+        public boolean remove(Object key, Object value) {
+            return false;
+        }
+
+        @Override
+        public boolean replace(Ticket key, String oldValue, String newValue) {
+            return false;
+        }
+
+        @Override
+        public String replace(Ticket key, String value) {
+            return null;
+        }
     };
 
+
+    @Override
+    public List<Ticket> findByDrawDate(LocalDateTime drawDate) {
+           return null;
+    }
+
+    @Override
     public <S extends Ticket> S save(S entity) {
-        ticketsDatabase.put(entity, entity.id().toString());
-        return entity;
+        return null;
     }
 
     @Override
@@ -206,12 +223,6 @@ public class TicketRepositoryInMemoryImpl implements TicketRepository {
 
     @Override
     public <S extends Ticket, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return null;
-    }
-
-
-    @Override
-    public List<Ticket> findByDrawDate(LocalDateTime drawDate) {
         return null;
     }
 }
