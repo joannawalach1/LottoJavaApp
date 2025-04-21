@@ -8,6 +8,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 @RequiredArgsConstructor
@@ -27,10 +28,12 @@ public class NumberReceiverFacade {
         TicketDto dto = numberReceiverMapper.toDto(newTicket);
         log.info(savedTicket);
         return dto;
-      }
+    }
 
 
-      public List<Ticket> userNumbers(LocalDateTime drawDate) {
-        return ticketRepository.findByDrawDate(drawDate);
-      }
+    public List<Ticket> userNumbers(LocalDateTime drawDate) {
+        return Optional.ofNullable(ticketRepository.findByDrawDate(drawDate))
+                .filter(list -> !list.isEmpty())
+                .orElseThrow(() -> new TicketNotFoundException("No tickets found for draw date: " + drawDate));
+    }
 }
