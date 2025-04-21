@@ -5,115 +5,32 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
+import pl.lottojjr.domain.Ticket;
+import pl.lottojjr.domain.TicketRepository;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ConcurrentMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TicketRepositoryInMemoryImpl implements TicketRepository {
-    Map<Ticket, String> ticketsDatabase = new ConcurrentMap<Ticket, String>() {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return false;
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        @Override
-        public String get(Object key) {
-            return null;
-        }
-
-        @Override
-        public String put(Ticket key, String value) {
-            return null;
-        }
-
-        @Override
-        public String remove(Object key) {
-            return null;
-        }
-
-        @Override
-        public void putAll(Map<? extends Ticket, ? extends String> m) {
-
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public Set<Ticket> keySet() {
-            return null;
-        }
-
-        @Override
-        public Collection<String> values() {
-            return null;
-        }
-
-        @Override
-        public Set<Entry<Ticket, String>> entrySet() {
-            return null;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public String putIfAbsent(Ticket key, String value) {
-            return null;
-        }
-
-        @Override
-        public boolean remove(Object key, Object value) {
-            return false;
-        }
-
-        @Override
-        public boolean replace(Ticket key, String oldValue, String newValue) {
-            return false;
-        }
-
-        @Override
-        public String replace(Ticket key, String value) {
-            return null;
-        }
-    };
+    Map<Ticket, String> ticketsDatabase = new ConcurrentHashMap<>();
 
 
     @Override
     public List<Ticket> findByDrawDate(LocalDateTime drawDate) {
-           return null;
+        return ticketsDatabase.keySet().stream()
+                .filter(ticket -> ticket.drawDate().equals(drawDate))
+                .collect(Collectors.toList());
     }
 
     @Override
     public <S extends Ticket> S save(S entity) {
-        return null;
+        ticketsDatabase.put(entity, entity.id());
+        return entity;
     }
 
     @Override

@@ -1,8 +1,8 @@
-package pl.lottojjr.domain.numberreceiver;
+package pl.lottojjr.domain;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
+import pl.lottojjr.domain.dto.TicketDto;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ public class NumberReceiverFacade {
     private final TicketRepository ticketRepository;
     private final NumberValidator numberValidator;
     private final NumberReceiverMapper numberReceiverMapper;
-    private final Clock clock;
+    private final  Clock clock;
 
     public TicketDto inputNumbers(Set<Integer> userNumbers) {
         String id = UUID.randomUUID().toString();

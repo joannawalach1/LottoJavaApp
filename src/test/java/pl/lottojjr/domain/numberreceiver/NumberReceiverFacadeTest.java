@@ -3,7 +3,12 @@ package pl.lottojjr.domain.numberreceiver;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
+import pl.lottojjr.AdjustableClock;
+import pl.lottojjr.domain.NumberReceiverFacade;
+import pl.lottojjr.domain.NumberReceiverMapper;
+import pl.lottojjr.domain.NumberValidator;
+import pl.lottojjr.domain.Ticket;
+import pl.lottojjr.domain.dto.TicketDto;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -20,19 +25,17 @@ class NumberReceiverFacadeTest {
     private final TicketRepositoryInMemoryImpl ticketRepository = new TicketRepositoryInMemoryImpl();
     private final NumberValidator numberValidator = new NumberValidator();
     private final NumberReceiverMapper numberReceiverMapper = Mappers.getMapper(NumberReceiverMapper.class);
+    private final AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2025, 5, 21, 12, 0, 0)
+            .toInstant(ZoneOffset.UTC),
+            ZoneId.systemDefault()
+    );
 
     NumberReceiverFacade numberReceiverFacade = new NumberReceiverFacade(
             ticketRepository,
             numberValidator,
             numberReceiverMapper,
-            Clock.fixed(
-                    LocalDateTime.of(2025, 5, 21, 12, 0, 0)
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant(),
-                    ZoneId.systemDefault()
-            )
+            clock
     );
-
 
     @Test
     public void should_return_success_if_user_gave_six_numbers() {
@@ -89,12 +92,12 @@ class NumberReceiverFacadeTest {
         assertThat(ticket.userNumbers()).containsExactlyInAnyOrderElementsOf(numbers);
     }
 
-//    @Test
-//    public void should_save_to_database_if_user_gave_six_numbers() {
-//        //when
-//        TicketDto ticket = numberReceiverFacade.inputNumbers(Set.of(11,12,13,14,15,16));
-//        List<Ticket> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
-//        //then
-//        assertTrue(tickets.size() > 0);
-//    }
+    @Test
+    public void should_save_to_database_if_user_gave_six_numbers() {
+        //when
+        TicketDto ticket = numberReceiverFacade.inputNumbers(Set.of(11,12,13,14,15,16));
+        List<Ticket> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
+        //then
+        assertTrue(tickets.size() > 0);
+    }
 }

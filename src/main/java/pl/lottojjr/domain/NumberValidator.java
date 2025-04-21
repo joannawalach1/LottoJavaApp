@@ -1,4 +1,4 @@
-package pl.lottojjr.domain.numberreceiver;
+package pl.lottojjr.domain;
 
 import java.util.Set;
 

@@ -1,7 +1,7 @@
-package pl.lottojjr.domain.numberreceiver;
+package pl.lottojjr.domain;
 
 import org.mapstruct.Mapper;
-import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
+import pl.lottojjr.domain.dto.TicketDto;
 
 @Mapper
 public interface NumberReceiverMapper {
