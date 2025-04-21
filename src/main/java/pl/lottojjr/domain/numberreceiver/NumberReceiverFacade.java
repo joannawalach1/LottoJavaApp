@@ -6,6 +6,7 @@ import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,7 +20,7 @@ public class NumberReceiverFacade {
 
     public TicketDto inputNumbers(Set<Integer> userNumbers) {
         String id = UUID.randomUUID().toString();
-        LocalDateTime drawDate = LocalDateTime.now(clock);
+        LocalDateTime drawDate = LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS);
         numberValidator.validateNumbers(userNumbers);
         Ticket newTicket = new Ticket(id, drawDate, userNumbers);
         Ticket savedTicket = ticketRepository.save(newTicket);
