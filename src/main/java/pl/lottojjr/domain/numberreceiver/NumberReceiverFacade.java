@@ -1,8 +1,8 @@
-package pl.lottojjr.domain;
+package pl.lottojjr.domain.numberreceiver;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.lottojjr.domain.dto.TicketDto;
+import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
 import java.time.Clock;
 import java.time.LocalDateTime;

@@ -4,13 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import pl.lottojjr.AdjustableClock;
-import pl.lottojjr.domain.NumberReceiverFacade;
-import pl.lottojjr.domain.NumberReceiverMapper;
-import pl.lottojjr.domain.NumberValidator;
-import pl.lottojjr.domain.Ticket;
-import pl.lottojjr.domain.dto.TicketDto;
+import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
