@@ -23,6 +23,11 @@ public class NumberReceiverFacadeConfiguration {
     }
 
     @Bean
+    public DrawDateGenerator drawDateGenerator(Clock clock) {
+        return new DrawDateGenerator(clock);
+    }
+
+    @Bean
     public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberReceiverMapper numberReceiverMapper, Clock clock) {
         NumberValidator numberValidator = new NumberValidator();
         DrawDateGenerator drawDateGenerator = new DrawDateGenerator(clock);
