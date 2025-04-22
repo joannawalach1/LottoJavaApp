@@ -18,8 +18,7 @@ public class WebClientFetcher {
         Set<Integer> numbers = webClient.get()
                 .uri("https://www.randomnumberapi.com/api/v1.0/random?min=1&max=49&count=6")
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Set<Integer>>() {
-                })
+                .bodyToMono(new ParameterizedTypeReference<Set<Integer>>() {})
                 .block();
         return numbers.stream().collect(Collectors.toSet());
     }

@@ -9,8 +9,8 @@ public class WinningNumbersValidator {
 
     public void validateWinningNumbers(Set<Integer> numberToValidate) {
         if (numberToValidate.stream()
-                .filter(number -> number >= MIN_NUMBER)
-                .filter(number -> number <= MAX_NUMBER)
+                .filter(number -> number <= MIN_NUMBER)
+                .filter(number -> number >= MAX_NUMBER)
                 .count() != AMOUNT_OF_NUMBERS) {
             throw new IllegalArgumentException("Incorrect number or range of numbers.");
         }

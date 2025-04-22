@@ -1,6 +1,7 @@
 package pl.lottojjr.domain.numbergenerator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import pl.lottojjr.domain.numberreceiver.DrawDateGenerator;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Log4j2
 public class WinningNumbersFacade {
     private final NumberGenerator numberGenerator;
     private final DrawDateGenerator drawDateGenerator;
@@ -21,9 +23,9 @@ public class WinningNumbersFacade {
         LocalDateTime currentDay = LocalDateTime.now(clock);
         LocalDateTime nextDrawDate = drawDateGenerator.generateNextDrawDate(currentDay);
         Set<Integer> winningNumbers = numberGenerator.generateRandomNumbers();
-        winningNumbersValidator.validateWinningNumbers(winningNumbers);
         WinningNumbers winningNumbersTicket = new WinningNumbers(id, nextDrawDate, winningNumbers);
         WinningNumbers savedWinningNumbers = winningNumbersRepository.save(winningNumbersTicket);
+        log.info(savedWinningNumbers);
         return savedWinningNumbers;
     }
 
