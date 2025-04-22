@@ -18,11 +18,6 @@ public class InMemoryNumberGeneratorRepository implements WinningNumbersReposito
     private final Map<Integer, WinningNumbers> database = new HashMap<>();
 
     @Override
-    public Optional<WinningNumbers> findWinningNumbersByNextDrawDate(LocalDateTime lottoDrawDate) {
-        return Optional.empty();
-    }
-
-    @Override
     public <S extends WinningNumbers> S save(S entity) {
         if (entity == null) {
             throw new IllegalArgumentException("WinningTicket cannot be null");
@@ -142,9 +137,10 @@ public class InMemoryNumberGeneratorRepository implements WinningNumbersReposito
     }
 
     @Override
-    public List<WinningNumbers> findWinningNumbersByDrawDate(LocalDateTime drawDate) {
+    public Optional<WinningNumbers> findWinningNumbersByNextDrawDate(LocalDateTime nextDrawDate) {
         return database.values().stream()
-                .filter(winningNumber -> winningNumber.drawDate().equals(drawDate))
-                .collect(Collectors.toList());
+                .filter(winningNumber -> winningNumber.nextDrawDate().equals(nextDrawDate))
+                .findFirst();
     }
+
 }

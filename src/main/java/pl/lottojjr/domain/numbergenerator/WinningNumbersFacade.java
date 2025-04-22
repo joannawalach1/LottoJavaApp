@@ -3,9 +3,9 @@ package pl.lottojjr.domain.numbergenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.lottojjr.domain.numberreceiver.DrawDateGenerator;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,11 +29,9 @@ public class WinningNumbersFacade {
         return savedWinningNumbers;
     }
 
-    public List<WinningNumbers> findWinningNumbersByDate(LocalDateTime drawDate) {
-        List<WinningNumbers> winningNumbersByDrawDate = winningNumbersRepository.findWinningNumbersByDrawDate(drawDate);
-        if (winningNumbersByDrawDate.isEmpty()) {
-            throw new WinningNumbersNotFoundException("No winning numbers found for: " + drawDate);
-        }
-        return winningNumbersByDrawDate;
+    public WinningNumbers findWinningNumbersByNextDrawDate(LocalDateTime nextDrawDate) {
+        return winningNumbersRepository.findWinningNumbersByNextDrawDate(nextDrawDate)
+                .filter(list -> !list.winningNumbers().isEmpty())
+                .orElseThrow(() -> new WinningNumbersNotFoundException("No winning numbers found for: " + nextDrawDate));
     }
 }

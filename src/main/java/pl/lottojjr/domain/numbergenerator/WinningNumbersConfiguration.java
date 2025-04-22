@@ -1,30 +1,32 @@
 package pl.lottojjr.domain.numbergenerator;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.lottojjr.domain.numberreceiver.DrawDateGenerator;
 import pl.lottojjr.infrastructure.numbergenerator.WebClientFetcher;
 
 import java.time.Clock;
+import java.util.Set;
 
+@Configuration
+@RequiredArgsConstructor
 public class WinningNumbersConfiguration {
 
-    @Bean
-    public WebClient webClient() {
-        return WebClient.builder().build();
-    }
+    private final WebClientFetcher WebClientFetcher;
 
     @Bean
-    public WebClientFetcher webClientFetcher(WebClient webClient) {
-        return new WebClientFetcher(webClient);
+    public NumberGenerator numberGenerator() {
+        return new NumberGenerator(WebClientFetcher);
     }
-
     @Bean
     public WinningNumbersFacade winningNumbersFacade(NumberGenerator numberGenerator,
                                                      DrawDateGenerator drawDateGenerator,
                                                      Clock clock,
-                                                     WinningNumbersRepository winningNumbersRepository,
-                                                     WinningNumbersValidator winningNumbersValidator) {
+                                                     WinningNumbersRepository winningNumbersRepository
+                                                     ) {
+        WinningNumbersValidator winningNumbersValidator = new WinningNumbersValidator();
         return new WinningNumbersFacade(
                 numberGenerator,
                 drawDateGenerator,

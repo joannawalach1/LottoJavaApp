@@ -4,13 +4,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface WinningNumbersRepository extends MongoRepository<WinningNumbers, String> {
 
-    Optional<WinningNumbers> findWinningNumbersByNextDrawDate(LocalDateTime lottoDrawDate);
+    Optional<WinningNumbers> findWinningNumbersByNextDrawDate(LocalDateTime nextDrawDate);
 
-    List<WinningNumbers> findWinningNumbersByDrawDate(LocalDateTime nextDrawDate);
+   //List<WinningNumbers> findWinningNumbersByNextDrawDate(LocalDateTime nextDrawDate);
 }

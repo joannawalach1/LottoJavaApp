@@ -2,6 +2,7 @@ package pl.lottojjr.domain.numbergenerator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.lottojjr.AdjustableClock;
@@ -13,42 +14,45 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RequiredArgsConstructor
 class NumberGeneratorFacadeTest {
+    private WinningNumbersFacade numberGeneratorFacade;
+    private NumberReceiverFacade numberReceiverFacade;
+    private DrawDateGenerator drawDateGenerator;
+    private InMemoryNumberGeneratorRepository winningNumbersRepository;
+    private NumberGenerator winningNumbersGenerator;
+    private WinningNumbersValidator winningNumbersValidator;
 
-    Clock clock = new AdjustableClock(
-            LocalDateTime.of(2025, 5, 21, 12, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.systemDefault()
-    );
+    @BeforeEach
+    public void setUp() {
+        Clock clock = new AdjustableClock(
+                LocalDateTime.of(2025, 5, 21, 12, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.systemDefault()
+        );
 
-    private final NumberReceiverFacade numberReceiverFacade = mock(NumberReceiverFacade.class);
-    private final DrawDateGenerator drawDateGenerator = mock(DrawDateGenerator.class);
-    private final InMemoryNumberGeneratorRepository winningNumbersRepository = new InMemoryNumberGeneratorRepository();
-    private final WebClient webClient = WebClient.builder().build();
-    private final WebClientFetcher fetcher = new WebClientFetcher(webClient);
-    private final NumberGenerator winningNumbersGenerator = new NumberGenerator(fetcher);
-    private final WinningNumbersValidator winningNumbersValidator = new WinningNumbersValidator();
-    WinningNumbersFacade numberGeneratorFacade = new WinningNumbersFacade(
-            winningNumbersGenerator,
-            drawDateGenerator,
-            clock,
-            winningNumbersRepository,
-            winningNumbersValidator
+        numberReceiverFacade = mock(NumberReceiverFacade.class);
+        drawDateGenerator = mock(DrawDateGenerator.class);
+        winningNumbersRepository = new InMemoryNumberGeneratorRepository();
+        WebClient webClient = WebClient.builder().build();
+        WebClientFetcher fetcher = new WebClientFetcher(webClient);
+        winningNumbersGenerator = new NumberGenerator(fetcher);
+        winningNumbersValidator = new WinningNumbersValidator();
 
-    );
-
+        numberGeneratorFacade = new WinningNumbersFacade(
+                winningNumbersGenerator,
+                drawDateGenerator,
+                clock,
+                winningNumbersRepository,
+                winningNumbersValidator
+        );
+    }
     @Test
     public void shouldGenerateExactlySixWinningNumbersBasedOnDrawDate() throws JsonProcessingException {
         LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 0, 0, 0);
@@ -95,8 +99,8 @@ class NumberGeneratorFacadeTest {
     @Test
     public void shouldTThrowAnExceptionIfArentNumbersForGivenDate() {
         LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 12, 0);
-        when(winningNumbersRepository.findWinningNumbersByDrawDate(drawDate)).thenReturn(null);
-        assertThrows(WinningNumbersNotFoundException.class, () -> numberGeneratorFacade.findWinningNumbersByDate(drawDate));
+        when(winningNumbersRepository.findWinningNumbersByNextDrawDate(drawDate)).thenReturn(null);
+        assertThrows(WinningNumbersNotFoundException.class, () -> numberGeneratorFacade.findWinningNumbersByNextDrawDate(drawDate));
     }
 }
 
