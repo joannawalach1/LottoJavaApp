@@ -2,12 +2,9 @@ package pl.lottojjr.domain.resultchecker;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import pl.lottojjr.domain.numberreceiver.Ticket;
 
 @Repository
-public interface PlayerRepository extends MongoRepository<Player, String> {
-    List<Player> saveAll(List<Player> player);
-    Optional<Player> findById(String id);
+public interface PlayerRepository<P, S> extends MongoRepository<Player, String> {
+    <S2 extends Ticket> S2 save(S2 entity);
 }

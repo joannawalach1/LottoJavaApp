@@ -12,7 +12,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,7 +95,7 @@ class NumberReceiverFacadeTest {
     public void should_save_to_database_if_user_gave_six_numbers() {
         //when
         TicketDto ticket = numberReceiverFacade.inputNumbers(Set.of(11,12,13,14,15,16));
-        List<Ticket> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
+        Set<TicketDto> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
         //then
         assertTrue(tickets.size() > 0);
     }
