@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.lottojjr.AdjustableClock;
 import pl.lottojjr.domain.numberreceiver.DrawDateGenerator;
@@ -17,7 +18,7 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +39,7 @@ class NumberGeneratorFacadeTest {
         );
 
         numberReceiverFacade = mock(NumberReceiverFacade.class);
-        drawDateGenerator = mock(DrawDateGenerator.class);
+        drawDateGenerator = new DrawDateGenerator(clock);
         winningNumbersRepository = new InMemoryNumberGeneratorRepository();
         WebClient webClient = WebClient.builder().build();
         WebClientFetcher fetcher = new WebClientFetcher(webClient);
@@ -58,9 +59,9 @@ class NumberGeneratorFacadeTest {
         LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 0, 0, 0);
         LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 4, 26, 12, 0, 0);
 
-        when(drawDateGenerator.generateNextDrawDate(drawDate)).thenReturn(expectedNextDrawDate);
-
         WinningNumbers winningNumbers = numberGeneratorFacade.generateWinningNumbers();
+
+        assertThat(winningNumbers.nextDrawDate()).isEqualTo(expectedNextDrawDate);
         assertThat(winningNumbers.winningNumbers().size()).isEqualTo(6);
     }
 
@@ -68,8 +69,6 @@ class NumberGeneratorFacadeTest {
     public void shouldGenerateSexWinningNumbersWithinCorrectRange() {
         LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 0, 0, 0);
         LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 4, 26, 12, 0, 0);
-
-        when(drawDateGenerator.generateNextDrawDate(drawDate)).thenReturn(expectedNextDrawDate);
 
         WinningNumbers winningNumbers = numberGeneratorFacade.generateWinningNumbers();
         assertThat(winningNumbers.winningNumbers().size()).isEqualTo(6);
@@ -98,9 +97,23 @@ class NumberGeneratorFacadeTest {
 
     @Test
     public void shouldTThrowAnExceptionIfArentNumbersForGivenDate() {
-        LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 12, 0);
-        when(winningNumbersRepository.findWinningNumbersByNextDrawDate(drawDate)).thenReturn(null);
+        LocalDateTime drawDate = LocalDateTime.of(2025, 4, 26, 12, 0);
         assertThrows(WinningNumbersNotFoundException.class, () -> numberGeneratorFacade.findWinningNumbersByNextDrawDate(drawDate));
     }
+    @Test
+    void shouldGenerateWinningNumbersWithCorrectNextDrawDate() {
+        // Przygotowanie mocka, aby metoda `getNextDrawDate` zwróciła oczekiwaną datę
+        LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 4, 21, 12, 0, 0, 0);
+        LocalDateTime expectedNextDrawDate1 = LocalDateTime.of(2025, 4, 26, 12, 0, 0, 0);
+
+        // Wywołanie metody generowania numerów
+        LocalDateTime result = drawDateGenerator.nextDrawDate(expectedNextDrawDate1);
+
+        // Sprawdzenie, czy data kolejnego losowania jest poprawna
+        assertEquals(expectedNextDrawDate1, result, "Next draw date should be correct");
+    }
+
+
+
 }
 

@@ -20,8 +20,9 @@ public class WinningNumbersFacade {
 
     public WinningNumbers generateWinningNumbers() {
         String id = UUID.randomUUID().toString();
-        LocalDateTime currentDay = LocalDateTime.now(clock);
-        LocalDateTime nextDrawDate = drawDateGenerator.generateNextDrawDate(currentDay);
+        LocalDateTime currentDay = LocalDateTime.of(2024,4,21,12,0,0);
+        LocalDateTime nextDrawDate = drawDateGenerator.nextDrawDate(currentDay);
+        log.info("Next Draw Date: {}", nextDrawDate);
         Set<Integer> winningNumbers = numberGenerator.generateRandomNumbers();
         WinningNumbers winningNumbersTicket = new WinningNumbers(id, nextDrawDate, winningNumbers);
         WinningNumbers savedWinningNumbers = winningNumbersRepository.save(winningNumbersTicket);

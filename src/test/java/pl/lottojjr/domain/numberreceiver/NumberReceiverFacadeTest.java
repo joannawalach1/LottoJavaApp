@@ -1,6 +1,8 @@
 package pl.lottojjr.domain.numberreceiver;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import pl.lottojjr.AdjustableClock;
@@ -14,8 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+@Log4j2
 @RequiredArgsConstructor
 class NumberReceiverFacadeTest {
     Clock clock = new AdjustableClock(
@@ -31,6 +34,7 @@ class NumberReceiverFacadeTest {
             new DrawDateGenerator(clock),
             new HashGenerator()
     );
+    private final DrawDateGenerator drawDateGenerator= new DrawDateGenerator(clock);
 
 
     @Test
@@ -96,4 +100,15 @@ class NumberReceiverFacadeTest {
         //then
         assertTrue(tickets.size() > 0);
     }
+    @Test
+    public void testGenerateNextDrawDate() {
+        // Test dla daty 2025-04-21 (poniedziałek)
+        LocalDateTime currentDate = LocalDateTime.of(2025, 4, 21, 10, 0, 0, 0);
+        LocalDateTime localDateTime = drawDateGenerator.nextDrawDate(currentDate);
+
+        // Sprawdzamy, czy obliczona data to najbliższa sobota (2025-04-26) o godzinie 12:00
+        LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 4, 26, 12, 0, 0, 0);
+        AssertionsForClassTypes.assertThat(localDateTime).isEqualTo(expectedNextDrawDate);
+    }
+    
 }

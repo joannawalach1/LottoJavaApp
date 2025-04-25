@@ -22,10 +22,6 @@ public class NumberReceiverFacadeConfiguration {
         return Mappers.getMapper(NumberReceiverMapper.class);
     }
 
-    @Bean
-    public DrawDateGenerator drawDateGenerator(Clock clock) {
-        return new DrawDateGenerator(clock);
-    }
 
     @Bean
     public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberReceiverMapper numberReceiverMapper, Clock clock) {

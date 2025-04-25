@@ -20,6 +20,8 @@ public class WinningNumbersConfiguration {
     public NumberGenerator numberGenerator() {
         return new NumberGenerator(WebClientFetcher);
     }
+
+
     @Bean
     public WinningNumbersFacade winningNumbersFacade(NumberGenerator numberGenerator,
                                                      DrawDateGenerator drawDateGenerator,
