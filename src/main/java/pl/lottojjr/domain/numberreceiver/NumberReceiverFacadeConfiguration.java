@@ -22,6 +22,7 @@ public class NumberReceiverFacadeConfiguration {
         return Mappers.getMapper(NumberReceiverMapper.class);
     }
 
+
     @Bean
     public NumberReceiverFacade numberReceiverFacade(TicketRepository repository, NumberReceiverMapper numberReceiverMapper, Clock clock) {
         NumberValidator numberValidator = new NumberValidator();
