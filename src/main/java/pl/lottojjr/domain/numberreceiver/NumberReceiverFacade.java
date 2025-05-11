@@ -6,9 +6,9 @@ import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -37,6 +37,9 @@ public class NumberReceiverFacade {
         if (tickets == null || tickets.isEmpty()) {
             throw new TicketNotFoundException("No tickets found for draw date: " + drawDate);
         }
-        return new HashSet<>();
+
+        return tickets.stream()
+                .map(numberReceiverMapper::toDto)
+                .collect(Collectors.toSet());
     }
 }

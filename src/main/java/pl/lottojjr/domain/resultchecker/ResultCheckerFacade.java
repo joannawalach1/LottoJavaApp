@@ -8,8 +8,10 @@ import pl.lottojjr.domain.numberreceiver.DrawDateGenerator;
 import pl.lottojjr.domain.numberreceiver.NumberReceiverFacade;
 import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 import pl.lottojjr.domain.resultchecker.dto.PlayerDto;
+import pl.lottojjr.domain.resultchecker.dto.ResultDto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,25 +25,38 @@ public class ResultCheckerFacade {
     private final DrawDateGenerator drawDateGenerator;
     private final WinnerMapper winnerMapper;
 
-    public PlayerDto generateWinners() {
-        LocalDateTime drawDate = drawDateGenerator.generateDrawDate();
+    public PlayerDto generateWinners(LocalDateTime drawDate) {
         Set<TicketDto> allTicketsByDate = numberReceiverFacade.userNumbers(drawDate);
+        WinningNumbers winningNumbers = winningNumbersFacade.findWinningNumbersByNextDrawDate(drawDate);
 
-        WinningNumbers winningNumbers = winningNumbersFacade.generateWinningNumbers();
+        if (winningNumbers == null) {
+            throw new IllegalStateException("Winning numbers not found");
+        }
+
         Set<Integer> winningNumbersSet = winningNumbers.winningNumbers();
 
         if (winningNumbersSet == null || winningNumbersSet.isEmpty()) {
             return new PlayerDto("No winners found", "Winners failed to retrieve");
         }
 
-        Set<TicketDto> players = winnerRetriever.countMatchingNumbers(allTicketsByDate, winningNumbersSet);
-        String resultText = "Winners: " + players.stream()
-                .map(ticketDto -> ticketDto.toString())
-                .collect(Collectors.joining(", "));
+        Set<ResultDto> players = winnerRetriever.countMatchingNumbers(allTicketsByDate, winningNumbersSet);
 
-        return new PlayerDto(resultText, "Winners succeeded to retrieve");
+        if (players.isEmpty()) {
+            return new PlayerDto("No winners found", "Brak wygranej");
+        }
+
+        Set<String> uniqueMessages = players.stream()
+                .map(ResultDto::message)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        String resultText = players.stream()
+                .map(player -> "Ticket ID: " + player.hash() + ", " + player.drawDate() + ", " + player.numbers() + ", Trafienie: " + player.hitNumbers().size() + " - " + player.message())
+                .collect(Collectors.joining("; "));
+
+        String message = "Trafienia: " + String.join(", ", uniqueMessages);
+
+        return new PlayerDto(resultText, message);
     }
-
-
 }
 

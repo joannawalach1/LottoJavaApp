@@ -24,7 +24,7 @@ public class DrawDateGenerator {
         LocalDateTime nextSaturday = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
         LocalDateTime nextDrawDate = nextSaturday.withHour(12).withMinute(0).withSecond(0).withNano(0);
         if (nextDrawDate.isBefore(currentDate)) {
-            nextDrawDate = nextDrawDate.plusYears(1);
+            nextDrawDate = nextDrawDate.plusYears(0);
         }
         return nextDrawDate;
     }
