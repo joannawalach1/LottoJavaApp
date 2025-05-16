@@ -12,7 +12,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,8 @@ class NumberReceiverFacadeTest {
     }
 
     @Test
-    public void should_return_fail_if_user_gave_less_than_six_numbers() {
+    public void
+    should_return_fail_if_user_gave_less_than_six_numbers() {
         //when
         Set<Integer> numbers = Set.of(1, 2, 3, 4, 5);
         //then
@@ -84,7 +84,7 @@ class NumberReceiverFacadeTest {
     public void should_return_next_draw_date_if_user_gave_six_correct_numbers() {
         //given
         Set<Integer> numbers = Set.of(1, 2, 3, 4, 5, 6);
-        LocalDateTime drawDate = LocalDateTime.of(2025, 4, 21, 12, 0, 0);
+        LocalDateTime drawDate = LocalDateTime.of(2025, 5, 7, 12, 0, 0);
         //when
         TicketDto ticket = numberReceiverFacade.inputNumbers(numbers);
         //then
@@ -96,18 +96,16 @@ class NumberReceiverFacadeTest {
     public void should_save_to_database_if_user_gave_six_numbers() {
         //when
         TicketDto ticket = numberReceiverFacade.inputNumbers(Set.of(11,12,13,14,15,16));
-        List<Ticket> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
+        Set<TicketDto> tickets = numberReceiverFacade.userNumbers(ticket.drawDate());
         //then
         assertTrue(tickets.size() > 0);
     }
     @Test
     public void testGenerateNextDrawDate() {
-        // Test dla daty 2025-04-21 (poniedziałek)
-        LocalDateTime currentDate = LocalDateTime.of(2025, 4, 21, 10, 0, 0, 0);
+        LocalDateTime currentDate = LocalDateTime.of(2025, 5, 7, 10, 0, 0, 0);
         LocalDateTime localDateTime = drawDateGenerator.nextDrawDate(currentDate);
 
-        // Sprawdzamy, czy obliczona data to najbliższa sobota (2025-04-26) o godzinie 12:00
-        LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 4, 26, 12, 0, 0, 0);
+        LocalDateTime expectedNextDrawDate = LocalDateTime.of(2025, 5, 17, 12, 0, 0, 0);
         AssertionsForClassTypes.assertThat(localDateTime).isEqualTo(expectedNextDrawDate);
     }
     

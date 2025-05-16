@@ -7,8 +7,8 @@ import pl.lottojjr.domain.numberreceiver.dto.TicketDto;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -31,9 +31,15 @@ public class NumberReceiverFacade {
         return dto;
     }
 
-    public List<Ticket> userNumbers(LocalDateTime drawDate) {
-        return Optional.ofNullable(ticketRepository.findByDrawDate(drawDate))
-                .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new TicketNotFoundException("No tickets found for draw date: " + drawDate));
+    public Set<TicketDto> userNumbers(LocalDateTime drawDate) {
+        List<Ticket> tickets = ticketRepository.findByDrawDate(drawDate);
+
+        if (tickets == null || tickets.isEmpty()) {
+            throw new TicketNotFoundException("No tickets found for draw date: " + drawDate);
+        }
+
+        return tickets.stream()
+                .map(numberReceiverMapper::toDto)
+                .collect(Collectors.toSet());
     }
 }
