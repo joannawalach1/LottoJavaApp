@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static pl.lottojjr.domain.resultannouncer.MessageResponse.*;
@@ -123,32 +124,48 @@ class ResultAnnouncerFacadeTest {
         assertThat(resultAnnouncerResponseDto).isEqualTo(expectedResult);
     }
 
+
     @Test
-    void should_return_already_checked_when_hash_is_already_saved() {
+    void should_return_cached_result_with_already_checked_message_when_result_checked_twice() {
         // given
         String hash = "123";
-        LocalDateTime drawDate = LocalDateTime.of(2025, 12, 17, 12, 0, 0);
-        ResultDto resultDto = ResultDto.builder()
-                .hash(hash)
-                .numbers(Set.of(1, 2, 3, 4, 5, 6))
-                .hitNumbers(Set.of(1, 2, 3, 4, 9, 0))
-                .drawDate(drawDate)
-                .isWinner(true)
-                .build();
-        when(resultCheckerFacade.findResultByHash(hash)).thenReturn(resultDto);
+        ResultDto generatedResult = new ResultDto(
+                hash,
+                Set.of(6, 1, 2, 3, 4, 5),
+                Set.of(1, 2, 3),
+                LocalDateTime.of(2022, 12, 17, 12, 0),
+                "You win!",
+                true
+        );
 
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration()
-                .resultAnnouncerFacade(resultCheckerFacade, Clock.systemUTC(), responseRepository);
+        ResultDto cachedResponse = new ResultDto(
+                hash,
+                Set.of(6, 1, 2, 3, 4, 5),
+                Set.of(1, 2, 3),
+                LocalDateTime.of(2022, 12, 17, 12, 0),
+                "You have already checked your ticket, please come back later",
+                true
+        );
 
-        facade.checkResult(hash);
+        when(resultCheckerFacade.findResultByHash(hash)).thenReturn(cachedResponse);
 
-        ResultAnnouncerResponseDto actual = facade.checkResult(hash);
+
+        ResultAnnouncerFacade resultAnnouncerFacade =
+                new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, Clock.systemUTC(), responseRepository);
+
+        // when
+        // First check - not cached yet
+        ResultAnnouncerResponseDto firstCheck = resultAnnouncerFacade.checkResult(hash);
+
+        // Second check - should return ALREADY_CHECKED
+        ResultAnnouncerResponseDto secondCheck = resultAnnouncerFacade.checkResult(hash);
 
         // then
-        ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(
-                actual.resultResponseDto(),
-                ALREADY_CHECKED.info
-        );
-        assertThat(actual).isEqualTo(expected);
+        assertEquals("You have already checked your ticket, please come back later", secondCheck.hashDoesNotExistMessage());
+        assertNotNull(secondCheck.resultResponseDto());
+        assertEquals(hash, secondCheck.resultResponseDto().hash());
+        assertEquals(LocalDateTime.of(2022, 12, 17, 12, 0), secondCheck.resultResponseDto().drawDate());
+        assertTrue(secondCheck.resultResponseDto().isWinner());
     }
-}
+
+    }

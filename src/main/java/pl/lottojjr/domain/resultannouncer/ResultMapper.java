@@ -12,4 +12,14 @@ public class ResultMapper {
                 .isWinner(resultResponse.isWinner())
                 .build();
     }
+
+    public static ResultResponseDto mapToEntity(ResultResponseDto resultResponseDto) {
+        return ResultResponseDto.builder()
+                .hash(resultResponseDto.hash())
+                .userNumbers(resultResponseDto.userNumbers())
+                .hitNumbers(resultResponseDto.hitNumbers())
+                .drawDate(resultResponseDto.drawDate())
+                .isWinner(resultResponseDto.isWinner())
+                .build();
+    }
 }

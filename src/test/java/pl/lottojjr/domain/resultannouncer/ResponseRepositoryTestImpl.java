@@ -22,13 +22,18 @@ public class ResponseRepositoryTestImpl implements ResponseRepository {
     }
 
     @Override
-    public Optional<ResultResponse> findById(String hash) {
-        return Optional.empty();
+    public ResultResponse findByHash(String hash) {
+        return null;
     }
 
     @Override
     public <S extends ResultResponse> List<S> saveAll(Iterable<S> entities) {
         return null;
+    }
+
+    @Override
+    public Optional<ResultResponse> findById(String s) {
+        return Optional.empty();
     }
 
     @Override
