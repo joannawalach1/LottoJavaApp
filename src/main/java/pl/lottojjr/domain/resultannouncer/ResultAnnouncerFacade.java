@@ -21,22 +21,26 @@ public class ResultAnnouncerFacade {
     private final ResponseRepository responseRepository;
 
     public ResultAnnouncerResponseDto checkResult(String hash) {
-        if (responseRepository.existsById(hash)) {
-            Optional<ResultResponse> resultResponseCached = responseRepository.findById(hash);
-            if(resultResponseCached.isPresent()){
-                return new ResultAnnouncerResponseDto(ResultMapper.mapToDto(resultResponseCached.get()), ALREADY_CHECKED.info);
-            }
+        Optional<ResultResponse> cached = responseRepository.findById(hash);
+        if (cached.isPresent()) {
+            return new ResultAnnouncerResponseDto(
+                    ResultMapper.mapToDto(cached.get()),
+                    ALREADY_CHECKED.info
+            );
         }
+
         ResultDto resultDto = resultCheckerFacade.findResultByHash(hash);
         if (resultDto == null) {
             return new ResultAnnouncerResponseDto(null, HASH_DOES_NOT_EXIST_MESSAGE.info);
         }
+
         ResultResponseDto responseDto = buildResponseDto(resultDto);
         responseRepository.save(buildResponse(responseDto));
-        if (responseRepository.existsById(hash) && !isAfterResultAnnouncementTime(resultDto)) {
+
+        if (!isAfterResultAnnouncementTime(resultDto)) {
             return new ResultAnnouncerResponseDto(responseDto, WAIT_MESSAGE.info);
         }
-        if (resultCheckerFacade.findResultByHash(hash).isWinner()) {
+        if (resultDto.isWinner()) {
             return new ResultAnnouncerResponseDto(responseDto, WIN_MESSAGE.info);
         }
         return new ResultAnnouncerResponseDto(responseDto, LOSE_MESSAGE.info);
