@@ -7,6 +7,7 @@ public record ResultDto(String hash,
                         Set<Integer> numbers,
                         Set<Integer> hitNumbers,
                         LocalDateTime drawDate,
-                        String message
+                        String message,
+                        boolean isWinner
 ) {
 }

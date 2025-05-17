@@ -15,13 +15,15 @@ public class WinnerRetriever {
                             .collect(Collectors.toSet());
 
                     String message = mapResultText(hitNumbers.size());
+                    boolean isWinner = hitNumbers.size() == 6;
 
                     return new ResultDto(
                             ticket.id(),
                             ticket.userNumbers(),
                             hitNumbers,
                             ticket.drawDate(),
-                            message
+                            message,
+                            isWinner
                     );
                 })
                 .collect(Collectors.toSet());
