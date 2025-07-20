@@ -65,7 +65,7 @@ class ResultCheckerFacadeTest {
         when(numberReceiverFacade.userNumbers(drawDate)).thenReturn(allTickets);
 
         Set<ResultDto> resultDtos = Set.of(
-                new ResultDto("1", Set.of(1, 2, 3, 4, 5, 6), Set.of(1, 2, 3, 4, 5,6), drawDate, "Szóstka! Wielka wygrana!")
+                new ResultDto("1", Set.of(1, 2, 3, 4, 5, 6), Set.of(1, 2, 3, 4, 5,6), drawDate,"Szóstka! Wielka wygrana!", true)
         );
         when(winnerRetriever.countMatchingNumbers(allTickets, winningNumbersDto.winningNumbers())).thenReturn(resultDtos);
 
@@ -102,9 +102,9 @@ class ResultCheckerFacadeTest {
 
         when(winnerRetriever.countMatchingNumbers(anySet(), eq(winningNumbersSet)))
                 .thenReturn(Set.of(
-                        new ResultDto("001", Set.of(1, 2, 3, 4, 5, 6), Set.of(1, 2, 3, 4, 5, 6), drawDate, "Szóstka! Wielka wygrana!"),
-                        new ResultDto("002", Set.of(1, 2, 3, 8, 9, 10), Set.of(1, 2, 3), drawDate,"Trójka - niezła próba!"),
-                        new ResultDto("003", Set.of(11, 12, 13, 14, 15, 16), Set.of(), drawDate, "Brak trafień - spróbuj ponownie")
+                        new ResultDto("001", Set.of(1, 2, 3, 4, 5, 6), Set.of(1, 2, 3, 4, 5, 6), drawDate, "Szóstka! Wielka wygrana!", true),
+                        new ResultDto("002", Set.of(1, 2, 3, 8, 9, 10), Set.of(1, 2, 3), drawDate,"Trójka - niezła próba!", true),
+                        new ResultDto("003", Set.of(11, 12, 13, 14, 15, 16), Set.of(), drawDate, "Brak trafień - spróbuj ponownie", false)
                 ));
 
         // When

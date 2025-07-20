@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import pl.lottojjr.domain.numberreceiver.Ticket;
+import pl.lottojjr.domain.resultchecker.dto.ResultDto;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,11 @@ public class PlayerRepositoryInMemoryImpl implements PlayerRepository<Player, St
     public <S extends Ticket> S save(S entity) {
         ticketsDatabase.put(entity, entity.id());
         return entity;
+    }
+
+    @Override
+    public ResultDto findByHash(String hash) {
+        return null;
     }
 
 

@@ -58,5 +58,9 @@ public class ResultCheckerFacade {
 
         return new PlayerDto(resultText, message);
     }
+
+    public ResultDto findResultByHash(String hash) {
+        return playerRepository.findByHash(hash);
+    }
 }
 
